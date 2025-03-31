@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:supabase_riverpod/counter/counter.dart';
+import 'package:supabase_riverpod/counter/view/counter_page.dart';
 import 'package:supabase_riverpod/l10n/l10n.dart';
 
 class App extends StatelessWidget {
