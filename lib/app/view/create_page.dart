@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class CreatePage extends StatefulWidget {
   const CreatePage({super.key});
@@ -8,6 +9,7 @@ class CreatePage extends StatefulWidget {
 }
 
 class _CreatePageState extends State<CreatePage> {
+  final SupabaseClient supabase = Supabase.instance.client;
   TextEditingController titleController = TextEditingController();
   bool isLoading = false;
   @override
@@ -18,10 +20,10 @@ class _CreatePageState extends State<CreatePage> {
         backgroundColor: Colors.blueAccent,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () {},
+          onPressed: () => Navigator.pop(context),
         ),
         title: const Text(
-          'Create Data',
+          'Create note',
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
       ),
@@ -34,19 +36,29 @@ class _CreatePageState extends State<CreatePage> {
               decoration: const InputDecoration(
                 hintText: 'Enter the Title',
                 border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(50)),),
+                  borderRadius: BorderRadius.all(Radius.circular(50)),
+                ),
               ),
             ),
             const SizedBox(height: 10),
-            if (isLoading) const Center(
-                    child: CircularProgressIndicator(),
-                  ) else ElevatedButton(
-              onPressed: () {},
-              child: const Padding(
-                padding: EdgeInsets.all(10),
-                child: Text('Create'),
+            if (isLoading)
+              const Center(
+                child: CircularProgressIndicator(),
+              )
+            else
+              ElevatedButton(
+                onPressed: () async {
+                  await supabase.from('notes').insert({
+                    'text': titleController.text,
+                    'created_at': DateTime.now().toIso8601String(),
+                    'updated_at': DateTime.now().toIso8601String(),
+                  });
+                },
+                child: const Padding(
+                  padding: EdgeInsets.all(10),
+                  child: Text('Create'),
+                ),
               ),
-            ),
           ],
         ),
       ),
