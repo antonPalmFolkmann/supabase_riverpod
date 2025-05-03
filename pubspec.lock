@@ -81,14 +81,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.2"
-  brick_build:
-    dependency: transitive
-    description:
-      name: brick_build
-      sha256: d3318959b85303c5b615abdff6541190363fb3a2c67d6221490a791834a3b274
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.0.0"
   brick_core:
     dependency: transitive
     description:
@@ -97,62 +89,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.0"
-  brick_json_generators:
-    dependency: transitive
-    description:
-      name: brick_json_generators
-      sha256: "80e7575f6d0e23573dadc62f7a6263a8f6dcd64425d5accf4c71815b786b1840"
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.0.0"
-  brick_offline_first:
-    dependency: transitive
-    description:
-      name: brick_offline_first
-      sha256: ed11c6beb35c3b00f3cef0631b4875be98e694ba061a7b196a995486ab141aeb
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.0.0"
-  brick_offline_first_build:
-    dependency: transitive
-    description:
-      name: brick_offline_first_build
-      sha256: d1ddda62f167c26ce86afa8e3cce5cacbe0b6f0d548e8ac0f99afeb0e62e7189
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.0.0"
-  brick_offline_first_with_rest:
-    dependency: transitive
-    description:
-      name: brick_offline_first_with_rest
-      sha256: "634ec36a43c443d85b407da305fed6fa85a93c3647851500f7759030339e50fc"
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.0.1"
-  brick_offline_first_with_supabase:
-    dependency: "direct main"
-    description:
-      name: brick_offline_first_with_supabase
-      sha256: ca085a83732ba6fcc6a2dc20a8f28e98fb2c2a76afafa00469b55f86b60980ef
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.0.0"
-  brick_offline_first_with_supabase_build:
-    dependency: "direct main"
-    description:
-      name: brick_offline_first_with_supabase_build
-      sha256: fa098590c3800684122bccc2162d802a2c4fb636432beaf5916ea02c42baa2f9
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.0.0"
-  brick_rest:
-    dependency: transitive
-    description:
-      name: brick_rest
-      sha256: "41420702a24d2597bfd40004412061709cfd7201a32035e10e6cbc9e4780f59b"
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.0.0+1"
   brick_sqlite:
     dependency: "direct main"
     description:
@@ -161,30 +97,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.0.1"
-  brick_sqlite_generators:
-    dependency: transitive
-    description:
-      name: brick_sqlite_generators
-      sha256: ef5400d91fda1caadd94b609a20a96de63ad5f5e9b34cfec89b7c73a3fbab312
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.0.0"
-  brick_supabase:
-    dependency: transitive
-    description:
-      name: brick_supabase
-      sha256: "196beab4b06d376fb865e0a7ffdd29b52621de6d338e520c8349fe00c9990e91"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.0.0"
-  brick_supabase_generators:
-    dependency: transitive
-    description:
-      name: brick_supabase_generators
-      sha256: "22692e9d69ee6d3c875c1594b8048b8b3fe5b178df00820b49adc68ec35aa2e4"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.0.0"
   build:
     dependency: transitive
     description:

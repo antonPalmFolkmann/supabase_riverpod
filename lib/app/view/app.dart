@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:supabase_riverpod/counter/view/counter_page.dart';
+import 'package:supabase_riverpod/app/view/home_page.dart';
 
 class App extends StatelessWidget {
   const App({super.key});
@@ -13,7 +13,7 @@ class App extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      home: const CounterPage(),
+      home: const HomePage(),
     );
   }
 }
