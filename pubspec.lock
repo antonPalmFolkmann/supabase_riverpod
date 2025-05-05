@@ -93,10 +93,10 @@ packages:
     dependency: "direct main"
     description:
       name: brick_sqlite
-      sha256: "37f0011263e9113801df02121d87ace42fdb6f92f2f456427bf4e433e473057e"
+      sha256: "211c23ef4d149b0841555c97b9232ae14e487acaf7e164f65ef487b0c1ad6dbd"
       url: "https://pub.dev"
     source: hosted
-    version: "4.0.1"
+    version: "4.0.2"
   build:
     dependency: transitive
     description:
