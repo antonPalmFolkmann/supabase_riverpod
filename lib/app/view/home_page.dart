@@ -1,7 +1,3 @@
-import 'dart:core';
-import 'dart:developer';
-import 'dart:nativewrappers/_internal/vm_shared/lib/integers_patch.dart';
-
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:supabase_riverpod/app/view/create_page.dart';
@@ -50,7 +46,7 @@ class _HomePageState extends State<HomePage> {
                       MaterialPageRoute(
                         builder: (context) => EditPage(
                           note['text'].toString(),
-                          int.parse(note['id']),
+                          int.tryParse(note['id'].toString()) ?? -1,
                         ),
                       ),
                     );

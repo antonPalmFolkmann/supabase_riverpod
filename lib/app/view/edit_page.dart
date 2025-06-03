@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class EditPage extends StatefulWidget {
   const EditPage(this.editData, this.editId, {super.key});
@@ -10,6 +11,7 @@ class EditPage extends StatefulWidget {
 }
 
 class _EditPageState extends State<EditPage> {
+  final SupabaseClient supabase = Supabase.instance.client;
   bool isLoading = false;
   TextEditingController titleController = TextEditingController();
 
@@ -48,36 +50,49 @@ class _EditPageState extends State<EditPage> {
               ),
             ),
             const SizedBox(height: 10),
-            if (isLoading) const Center(
-                    child: CircularProgressIndicator(),
-                  ) else Column(
-                    children: [
-                      SizedBox(
-                        width: double.infinity,
-                        height: 40,
-                        child: ElevatedButton(
-                          onPressed: () {},
-                          child: const Text('Update'),
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      const Divider(),
-                      ElevatedButton.icon(
-                        onPressed: () {},
-                        icon: const Icon(
-                          Icons.delete,
-                          color: Colors.white,
-                        ),
-                        label: const Text(
-                          'Delete',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        style: ButtonStyle(
-                            backgroundColor:
-                                WidgetStateProperty.all(Colors.red),),
-                      ),
-                    ],
+            if (isLoading)
+              const Center(
+                child: CircularProgressIndicator(),
+              )
+            else
+              Column(
+                children: [
+                  SizedBox(
+                    width: double.infinity,
+                    height: 40,
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        await supabase.from('notes').update({
+                          'text': titleController.text,
+                          'updated_at': DateTime.now().toIso8601String(),
+                        }).eq('id', widget.editId);
+                      },
+                      child: const Text('Update'),
+                    ),
                   ),
+                  const SizedBox(height: 10),
+                  const Divider(),
+                  ElevatedButton.icon(
+                    onPressed: () async {
+                      await supabase
+                          .from('notes')
+                          .delete()
+                          .eq('id', widget.editId);
+                    },
+                    icon: const Icon(
+                      Icons.delete,
+                      color: Colors.white,
+                    ),
+                    label: const Text(
+                      'Delete',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    style: ButtonStyle(
+                      backgroundColor: WidgetStateProperty.all(Colors.red),
+                    ),
+                  ),
+                ],
+              ),
           ],
         ),
       ),
