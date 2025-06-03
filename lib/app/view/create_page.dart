@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-class CreatePage extends StatefulWidget {
+class CreatePage extends ConsumerStatefulWidget {
   const CreatePage({super.key});
 
   @override
-  State<CreatePage> createState() => _CreatePageState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _CreatePageState();
 }
 
-class _CreatePageState extends State<CreatePage> {
+class _CreatePageState extends ConsumerState<CreatePage> {
   final SupabaseClient supabase = Supabase.instance.client;
   TextEditingController titleController = TextEditingController();
   bool isLoading = false;

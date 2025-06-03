@@ -1,20 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:supabase_riverpod/app/view/create_page.dart';
 import 'package:supabase_riverpod/app/view/edit_page.dart';
 
-class HomePage extends StatefulWidget {
+class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  ConsumerState<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
-  final SupabaseClient supabase = Supabase.instance.client;
+final noteProvider = FutureProvider<List<Map<String, dynamic>>>((ref) {
+  final supabase = Supabase.instance.client;
+  return supabase.from('notes').select();
+});
+
+class _HomePageState extends ConsumerState<HomePage> {
+  @override
+  void initState() {
+    super.initState();
+    ref.read(noteProvider);
+  }
 
   @override
   Widget build(BuildContext context) {
+    final notesValue = ref.watch(noteProvider);
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -25,41 +36,10 @@ class _HomePageState extends State<HomePage> {
         ),
         actions: const [],
       ),
-      body: FutureBuilder(
-        // List for to-dos ->
-        future: supabase.from('notes').select(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          final notes = snapshot.data!;
-          return ListView.builder(
-            itemCount: notes.length,
-            itemBuilder: (context, index) {
-              final note = notes[index];
-              return ListTile(
-                title: Text(note['text'].toString()),
-                trailing: IconButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => EditPage(
-                          note['text'].toString(),
-                          int.tryParse(note['id'].toString()) ?? -1,
-                        ),
-                      ),
-                    );
-                  },
-                  icon: const Icon(
-                    Icons.edit,
-                    color: Colors.red,
-                  ),
-                ),
-              );
-            },
-          );
-        },
+      body: notesValue.when(
+        data: (notes) => NotesList(notes: notes),
+        error: (error, stack) => Text('Error: $error'),
+        loading: () => const Center(child: CircularProgressIndicator()),
       ),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
@@ -70,6 +50,42 @@ class _HomePageState extends State<HomePage> {
           );
         },
       ),
+    );
+  }
+}
+
+class NotesList extends StatelessWidget {
+  const NotesList({required this.notes, super.key});
+
+  final List<Map<String, dynamic>> notes;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemCount: notes.length,
+      itemBuilder: (context, index) {
+        final note = notes[index];
+        return ListTile(
+          title: Text(note['text'].toString()),
+          trailing: IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => EditPage(
+                    note['text'].toString(),
+                    int.tryParse(note['id'].toString()) ?? -1,
+                  ),
+                ),
+              );
+            },
+            icon: const Icon(
+              Icons.edit,
+              color: Colors.red,
+            ),
+          ),
+        );
+      },
     );
   }
 }

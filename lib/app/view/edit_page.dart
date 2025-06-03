@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -62,6 +64,8 @@ class _EditPageState extends State<EditPage> {
                     height: 40,
                     child: ElevatedButton(
                       onPressed: () async {
+                        print('Update button, editId: ${widget.editId}');
+                        print('Update button, text: ${titleController.text}');
                         await supabase.from('notes').update({
                           'text': titleController.text,
                           'updated_at': DateTime.now().toIso8601String(),
