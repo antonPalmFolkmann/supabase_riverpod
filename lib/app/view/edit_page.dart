@@ -1,25 +1,33 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-class EditPage extends StatefulWidget {
+class EditPage extends ConsumerStatefulWidget {
   const EditPage(this.editData, this.editId, {super.key});
   final String editData;
   final int editId;
 
   @override
-  State<EditPage> createState() => _EditPageState();
+  ConsumerState<EditPage> createState() => _EditPageState();
 }
 
-class _EditPageState extends State<EditPage> {
-  final SupabaseClient supabase = Supabase.instance.client;
+final supabaseProvider = Provider<SupabaseClient>((ref) {
+  return Supabase.instance.client;
+});
+
+final updateNoteProvider = FutureProvider((ref) {
+  final supabase = ref.watch(supabaseProvider);
+  return supabase.from('notes');
+});
+
+class _EditPageState extends ConsumerState<EditPage> {
   bool isLoading = false;
   TextEditingController titleController = TextEditingController();
 
   @override
   void initState() {
     titleController.text = widget.editData;
+    ref.read(supabaseProvider);
     super.initState();
   }
 
@@ -66,10 +74,16 @@ class _EditPageState extends State<EditPage> {
                       onPressed: () async {
                         print('Update button, editId: ${widget.editId}');
                         print('Update button, text: ${titleController.text}');
-                        await supabase.from('notes').update({
-                          'text': titleController.text,
-                          'updated_at': DateTime.now().toIso8601String(),
-                        }).eq('id', widget.editId);
+                        final supabase = ref.watch(supabaseProvider);
+                        final updated = await supabase
+                            .from('notes')
+                            .update({
+                              'text': titleController.text,
+                              'updated_at': DateTime.now().toIso8601String(),
+                            })
+                            .eq('id', widget.editId)
+                            .select();
+                        print(updated);
                       },
                       child: const Text('Update'),
                     ),
@@ -78,6 +92,7 @@ class _EditPageState extends State<EditPage> {
                   const Divider(),
                   ElevatedButton.icon(
                     onPressed: () async {
+                      final supabase = ref.watch(supabaseProvider);
                       await supabase
                           .from('notes')
                           .delete()
