@@ -5,14 +5,14 @@
 ## Goals for the project
 
 ### Step 1 - get it working
-- [x] Create todo
-- [x] Read todo
-- [ ] Update todo
-- [ ] Delete todo
+- [x] Create note
+- [x] Read note
+- [x] Update note
+- [x] Delete note
 
 ### Step 2 - abstraction
-- [ ] Todo repository
-- [ ] Supabase injectable service
+- [x] Note repository
+- [x] Supabase injectable service
 
 ---
 
