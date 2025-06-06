@@ -15,9 +15,7 @@ class EditPage extends ConsumerWidget {
         backgroundColor: Colors.blueAccent,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
+          onPressed: () => Navigator.pop(context),
         ),
         title: const Text(
           'Edit Data',
