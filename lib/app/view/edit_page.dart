@@ -1,38 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:supabase_riverpod/app/models/note_repository.dart';
 
-class EditPage extends ConsumerStatefulWidget {
+class EditPage extends ConsumerWidget {
   const EditPage(this.editData, this.editId, {super.key});
   final String editData;
   final int editId;
 
   @override
-  ConsumerState<EditPage> createState() => _EditPageState();
-}
-
-final supabaseProvider = Provider<SupabaseClient>((ref) {
-  return Supabase.instance.client;
-});
-
-final updateNoteProvider = FutureProvider((ref) {
-  final supabase = ref.watch(supabaseProvider);
-  return supabase.from('notes');
-});
-
-class _EditPageState extends ConsumerState<EditPage> {
-  bool isLoading = false;
-  TextEditingController titleController = TextEditingController();
-
-  @override
-  void initState() {
-    titleController.text = widget.editData;
-    ref.read(supabaseProvider);
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -50,71 +26,84 @@ class _EditPageState extends ConsumerState<EditPage> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(20),
-        child: Column(
+        child: EditColumn(noteId: editId, noteText: editData),
+      ),
+    );
+  }
+}
+
+class EditColumn extends ConsumerStatefulWidget {
+  const EditColumn({
+    required this.noteId,
+    required this.noteText,
+    super.key,
+  });
+
+  final int noteId;
+  final String noteText;
+
+  @override
+  ConsumerState<EditColumn> createState() => _EditColumnState();
+}
+
+class _EditColumnState extends ConsumerState<EditColumn> {
+  TextEditingController titleController = TextEditingController();
+
+  @override
+  void initState() {
+    titleController.text = widget.noteText;
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        TextField(
+          controller: titleController,
+          decoration: const InputDecoration(
+            hintText: 'Enter the Title',
+            border: OutlineInputBorder(),
+          ),
+        ),
+        const SizedBox(height: 10),
+        Column(
           children: [
-            TextField(
-              controller: titleController,
-              decoration: const InputDecoration(
-                hintText: 'Enter the Title',
-                border: OutlineInputBorder(),
+            SizedBox(
+              width: double.infinity,
+              height: 40,
+              child: ElevatedButton(
+                onPressed: () async {
+                  ref.watch(updateNoteProvider(
+                    text: titleController.text,
+                    id: widget.noteId,
+                  ));
+                  Navigator.pop(context);
+                },
+                child: const Text('Update'),
               ),
             ),
             const SizedBox(height: 10),
-            if (isLoading)
-              const Center(
-                child: CircularProgressIndicator(),
-              )
-            else
-              Column(
-                children: [
-                  SizedBox(
-                    width: double.infinity,
-                    height: 40,
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        print('Update button, editId: ${widget.editId}');
-                        print('Update button, text: ${titleController.text}');
-                        final supabase = ref.watch(supabaseProvider);
-                        final updated = await supabase
-                            .from('notes')
-                            .update({
-                              'text': titleController.text,
-                              'updated_at': DateTime.now().toIso8601String(),
-                            })
-                            .eq('id', widget.editId)
-                            .select();
-                        print(updated);
-                      },
-                      child: const Text('Update'),
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  const Divider(),
-                  ElevatedButton.icon(
-                    onPressed: () async {
-                      final supabase = ref.watch(supabaseProvider);
-                      await supabase
-                          .from('notes')
-                          .delete()
-                          .eq('id', widget.editId);
-                    },
-                    icon: const Icon(
-                      Icons.delete,
-                      color: Colors.white,
-                    ),
-                    label: const Text(
-                      'Delete',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    style: ButtonStyle(
-                      backgroundColor: WidgetStateProperty.all(Colors.red),
-                    ),
-                  ),
-                ],
+            const Divider(),
+            ElevatedButton.icon(
+              onPressed: () async {
+                ref.watch(deleteNoteProvider(id: widget.noteId));
+              },
+              icon: const Icon(
+                Icons.delete,
+                color: Colors.white,
               ),
+              label: const Text(
+                'Delete',
+                style: TextStyle(color: Colors.white),
+              ),
+              style: ButtonStyle(
+                backgroundColor: WidgetStateProperty.all(Colors.red),
+              ),
+            ),
           ],
         ),
-      ),
+      ],
     );
   }
 }

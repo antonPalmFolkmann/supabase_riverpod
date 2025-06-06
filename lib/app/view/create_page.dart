@@ -1,20 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:supabase_riverpod/app/models/note_repository.dart';
 
-class CreatePage extends ConsumerStatefulWidget {
+class CreatePage extends ConsumerWidget {
   const CreatePage({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _CreatePageState();
-}
-
-class _CreatePageState extends ConsumerState<CreatePage> {
-  final SupabaseClient supabase = Supabase.instance.client;
-  TextEditingController titleController = TextEditingController();
-  bool isLoading = false;
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -28,41 +20,51 @@ class _CreatePageState extends ConsumerState<CreatePage> {
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
-            TextField(
-              controller: titleController,
-              decoration: const InputDecoration(
-                hintText: 'Enter the Title',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(50)),
-                ),
-              ),
-            ),
-            const SizedBox(height: 10),
-            if (isLoading)
-              const Center(
-                child: CircularProgressIndicator(),
-              )
-            else
-              ElevatedButton(
-                onPressed: () async {
-                  await supabase.from('notes').insert({
-                    'text': titleController.text,
-                    'created_at': DateTime.now().toIso8601String(),
-                    'updated_at': DateTime.now().toIso8601String(),
-                  });
-                },
-                child: const Padding(
-                  padding: EdgeInsets.all(10),
-                  child: Text('Create'),
-                ),
-              ),
-          ],
-        ),
+      body: const Padding(
+        padding: EdgeInsets.all(20),
+        child: CreateColumn(),
       ),
+    );
+  }
+}
+
+class CreateColumn extends ConsumerStatefulWidget {
+  const CreateColumn({
+    super.key,
+  });
+
+  @override
+  ConsumerState<CreateColumn> createState() => _CreateColumnState();
+}
+
+class _CreateColumnState extends ConsumerState<CreateColumn> {
+  TextEditingController titleController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        TextField(
+          controller: titleController,
+          decoration: const InputDecoration(
+            hintText: 'Enter the Title',
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(50)),
+            ),
+          ),
+        ),
+        const SizedBox(height: 10),
+        ElevatedButton(
+          onPressed: () async {
+            ref.watch(createNoteProvider(text: titleController.text));
+            Navigator.pop(context);
+          },
+          child: const Padding(
+            padding: EdgeInsets.all(10),
+            child: Text('Create'),
+          ),
+        ),
+      ],
     );
   }
 }

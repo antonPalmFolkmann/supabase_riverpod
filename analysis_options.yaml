@@ -4,5 +4,7 @@ linter:
     public_member_api_docs: false
 
 analyzer:
+  errors:
+    require_trailing_commas: ignore
   plugins:
     - custom_lint

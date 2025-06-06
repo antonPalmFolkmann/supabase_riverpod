@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:supabase_riverpod/app/models/note_repository.dart';
 import 'package:supabase_riverpod/app/view/create_page.dart';
 import 'package:supabase_riverpod/app/view/edit_page.dart';
 
@@ -11,21 +11,15 @@ class HomePage extends ConsumerStatefulWidget {
   ConsumerState<HomePage> createState() => _HomePageState();
 }
 
-final noteProvider = FutureProvider<List<Map<String, dynamic>>>((ref) {
-  final supabase = Supabase.instance.client;
-  return supabase.from('notes').select();
-});
-
 class _HomePageState extends ConsumerState<HomePage> {
   @override
   void initState() {
     super.initState();
-    ref.read(noteProvider);
   }
 
   @override
   Widget build(BuildContext context) {
-    final notesValue = ref.watch(noteProvider);
+    final notesValue = ref.watch(notesProvider);
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
