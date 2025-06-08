@@ -7,41 +7,39 @@ part 'note_repository.g.dart';
 
 @riverpod
 Future<List<Map<String, dynamic>>> notes(Ref ref) {
-  final supabase = ref.watch(supabaseProvider);
-  return ref.watch(noteRepositoryProvider).getNotes(supabase);
+  return ref.watch(noteRepositoryProvider).getNotes();
 }
 
 @riverpod
 Future<void> createNote(Ref ref, {required String text}) async {
-  final supabase = ref.watch(supabaseProvider);
-  await ref.watch(noteRepositoryProvider).createNote(supabase, text);
+  await ref.watch(noteRepositoryProvider).createNote(text);
 }
 
 @riverpod
 Future<void> updateNote(Ref ref,
     {required String text, required int id}) async {
-  final supabase = ref.watch(supabaseProvider);
-  await ref.watch(noteRepositoryProvider).updateNote(supabase, text, id);
+  await ref.watch(noteRepositoryProvider).updateNote(text, id);
 }
 
 @riverpod
 Future<void> deleteNote(Ref ref, {required int id}) async {
-  final supabase = ref.watch(supabaseProvider);
-  await ref.watch(noteRepositoryProvider).deleteNote(supabase, id);
+  await ref.watch(noteRepositoryProvider).deleteNote(id);
 }
 
 @riverpod
-NoteRepository noteRepository(Ref ref) => const NoteRepository();
+NoteRepository noteRepository(Ref ref) => NoteRepository(ref);
 
 class NoteRepository {
-  const NoteRepository();
+  NoteRepository(this.ref);
+  final Ref ref;
   String get repositoryName => 'notes';
+  SupabaseClient get supabase => ref.watch(supabaseProvider);
 
-  Future<List<Map<String, dynamic>>> getNotes(SupabaseClient supabase) async {
+  Future<List<Map<String, dynamic>>> getNotes() async {
     return await supabase.from(repositoryName).select();
   }
 
-  Future<void> createNote(SupabaseClient supabase, String text) async {
+  Future<void> createNote(String text) async {
     return await supabase.from(repositoryName).insert({
       'text': text,
       'created_at': DateTime.now().toIso8601String(),
@@ -49,14 +47,14 @@ class NoteRepository {
     });
   }
 
-  Future<void> updateNote(SupabaseClient supabase, String text, int id) async {
+  Future<void> updateNote(String text, int id) async {
     return await supabase.from(repositoryName).update({
       'text': text,
       'updated_at': DateTime.now().toIso8601String(),
     }).eq('id', id);
   }
 
-  Future<void> deleteNote(SupabaseClient supabase, int id) async {
+  Future<void> deleteNote(int id) async {
     return await supabase.from(repositoryName).delete().eq('id', id);
   }
 }
